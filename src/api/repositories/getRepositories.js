@@ -23,7 +23,7 @@ const getRepositoryPayload = (
   ownerAvatarUrl: get(githubRepository, 'owner.avatar_url') || null,
 });
 
-const getRepositories = async ctx => {
+const getRepositories = async (ctx) => {
   const {
     dataLoaders: { repositoryRatingAverageLoader, repositoryReviewCountLoader },
   } = ctx;
@@ -32,11 +32,11 @@ const getRepositories = async ctx => {
     orderBy: ['createdAt', 'id'],
   });
 
-  const repositoryIds = data.edges.map(edge => edge.node.id);
+  const repositoryIds = data.edges.map((edge) => edge.node.id);
 
   const [githubRepositories, reviewCounts, ratingAverages] = await Promise.all([
     Promise.all(
-      data.edges.map(edge =>
+      data.edges.map((edge) =>
         githubClient.getRepository(edge.node.ownerName, edge.node.name),
       ),
     ),

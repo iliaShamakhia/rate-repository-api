@@ -50,7 +50,7 @@ const argsSchema = yup.object().shape({
 export const resolvers = {
   Mutation: {
     createReview: async (obj, args, { authService }) => {
-      const currentUser = await authService.getUserOrFail();
+      const authorizedUser = await authService.getAuthorizedUserOrFail();
 
       const { review } = await argsSchema.validate(args, {
         stripUnknown: true,
@@ -87,7 +87,7 @@ export const resolvers = {
         });
       }
 
-      const id = createReviewId(currentUser.id, repositoryId);
+      const id = createReviewId(authorizedUser.id, repositoryId);
 
       const existringReview = await Review.query().findById(id);
 
@@ -97,7 +97,7 @@ export const resolvers = {
 
       return Review.query().insertAndFetch({
         id,
-        userId: currentUser.id,
+        userId: authorizedUser.id,
         repositoryId,
         text: review.text,
         rating: review.rating,

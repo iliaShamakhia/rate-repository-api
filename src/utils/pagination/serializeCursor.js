@@ -1,4 +1,4 @@
-const serializeCursor = payload => {
+const serializeCursor = (payload) => {
   return Buffer.from(JSON.stringify(payload)).toString('base64');
 };
 

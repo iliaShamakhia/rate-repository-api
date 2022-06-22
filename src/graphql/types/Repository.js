@@ -24,7 +24,7 @@ export const typeDefs = gql`
     ownerAvatarUrl: String
     description: String
     language: String
-    userHasReviewed: Boolean
+    authorizedUserHasReviewed: Boolean
   }
 `;
 
@@ -33,11 +33,12 @@ const argsSchema = yup.object({
   first: yup.number().min(1).max(30).default(30),
 });
 
-const makeGithubRepositoryResolver =
-  (getValue) =>
-  async ({ ownerName, name }) => {
-    return getValue(await githubClient.getRepository(ownerName, name));
-  };
+const makeGithubRepositoryResolver = (getValue) => async ({
+  ownerName,
+  name,
+}) => {
+  return getValue(await githubClient.getRepository(ownerName, name));
+};
 
 export const resolvers = {
   Repository: {
@@ -67,15 +68,15 @@ export const resolvers = {
       args,
       { dataLoaders: { repositoryReviewCountLoader } },
     ) => repositoryReviewCountLoader.load(id),
-    userHasReviewed: async (
+    authorizedUserHasReviewed: async (
       { id },
       args,
       { dataLoaders: { userRepositoryReviewExistsLoader }, authService },
     ) => {
-      const currentUser = await authService.getUser();
+      const authorizedUser = await authService.getAuthorizedUser();
 
-      return currentUser
-        ? userRepositoryReviewExistsLoader.load([currentUser.id, id])
+      return authorizedUser
+        ? userRepositoryReviewExistsLoader.load([authorizedUser.id, id])
         : null;
     },
     fullName: ({ ownerName, name }) => [ownerName, name].join('/'),

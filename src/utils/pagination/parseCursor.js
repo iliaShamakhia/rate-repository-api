@@ -1,4 +1,4 @@
-const parseCursor = cursor => {
+const parseCursor = (cursor) => {
   if (!cursor) {
     return null;
   }

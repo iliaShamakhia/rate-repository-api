@@ -47,23 +47,14 @@ const cursorPaginate = async (
     : null;
 
   const cursorQuery = cursor
-    ? builder.clone().andWhere(b => cursorWhere(b, orderBy, cursor))
+    ? builder.clone().andWhere((b) => cursorWhere(b, orderBy, cursor))
     : builder;
 
-  const paginationQuery = cursorQuery
-    .clone()
-    .limit(limit)
-    .orderBy(orderBy);
+  const paginationQuery = cursorQuery.clone().limit(limit).orderBy(orderBy);
 
-  const cursorCountQuery = cursorQuery
-    .clone()
-    .count({ count: '*' })
-    .first();
+  const cursorCountQuery = cursorQuery.clone().count({ count: '*' }).first();
 
-  const totalCountQuery = builder
-    .clone()
-    .count({ count: '*' })
-    .first();
+  const totalCountQuery = builder.clone().count({ count: '*' }).first();
 
   const [rows, cursorCountObject, totalCountObject] = await Promise.all([
     paginationQuery,
@@ -88,7 +79,7 @@ const cursorPaginate = async (
     (Boolean(before) && remaining > 0) ||
     (!before && totalCount - cursorCount > 0);
 
-  const edges = rows.map(node => ({
+  const edges = rows.map((node) => ({
     node,
     cursor: createCursor(node, orderBy),
   }));

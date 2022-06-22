@@ -13,7 +13,7 @@ const oneHour = 1000 * 60 * 60;
 
 const HTTP_CLIENT_ERROR = Symbol();
 
-const isNotFoundError = error =>
+const isNotFoundError = (error) =>
   get(error[HTTP_CLIENT_ERROR], 'response.status') === 404;
 
 export class GithubError extends ApolloError {

@@ -3,16 +3,16 @@ const recursiveCursorWhere = (builder, comparisons, composites) => {
   composites = [comparison, ...composites];
   const op = comparison.order === 'asc' ? '>' : '<';
 
-  builder.andWhere(function() {
+  builder.andWhere(function () {
     this.where(comparison.column, op, comparison.value);
 
     if (comparisons.length > 1) {
-      this.orWhere(function() {
+      this.orWhere(function () {
         for (const composite of composites) {
           this.andWhere(composite.column, composite.value);
         }
 
-        this.andWhere(function() {
+        this.andWhere(function () {
           recursiveCursorWhere(this, comparisons.slice(1), composites);
         });
       });
